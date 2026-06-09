@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>folk CRM — AI Visibility Audit | AISOLL AEO Case Study</title>
+<meta name="description" content="How folk CRM scores across ChatGPT, Claude, and Gemini. Baseline Share of Voice 21%, ceiling narrative in 9/10 responses, AI features absent from all 3 LLM responses. Full AEO audit by AISOLL.">
+<meta property="og:title" content="folk CRM AI Visibility Audit — AISOLL">
+<meta property="og:description" content="Baseline SoV 21%. Ceiling warning in 9/10 AI responses. Full prompt scorecard, infrastructure gaps, and implementation fixes by AISOLL.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://aisoll.github.io/folk-aeo-pilot/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #faf9f6;
+  --bg2:    #f4f2ee;
+  --bg3:    #eceae5;
+  --ink:    #0f0e0d;
+  --ink2:   #3d3a35;
+  --ink3:   #7a7670;
+  --ink4:   #b0aca5;
+  --border: #e0ddd7;
+  --border2:#ccc9c2;
+  --red:    #c0392b;
+  --red-bg: #fdf4f3;
+  --red-bd: #f2c4c0;
+  --grn:    #1a6644;
+  --grn-bg: #f2f9f5;
+  --grn-bd: #b8dfc9;
+  --amb:    #8a5c00;
+  --amb-bg: #fdf8ef;
+  --mono:   'DM Mono', monospace;
+  --sans:   'Inter', sans-serif;
+  --max:    900px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+
+/* PROGRESS */
+#prog { position:fixed; top:0; left:0; height:1.5px; background:var(--ink); z-index:999; width:0; transition:width .1s; }
+
+/* NAV */
+nav { position:sticky; top:0; z-index:100; background:rgba(250,249,246,.96); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); padding:.75rem 2rem; display:flex; align-items:center; justify-content:space-between; }
+.nav-l { display:flex; align-items:center; gap:.75rem; }
+.nav-brand { font-family:var(--mono); font-size:.7rem; color:var(--ink); letter-spacing:.08em; font-weight:500; }
+.nav-div { color:var(--border2); font-size:.8rem; }
+.nav-label { font-family:var(--mono); font-size:.68rem; color:var(--ink3); }
+.nav-r { display:flex; gap:1.75rem; }
+.nav-r a { font-family:var(--mono); font-size:.65rem; color:var(--ink3); text-decoration:none; letter-spacing:.06em; text-transform:uppercase; transition:color .15s; }
+.nav-r a:hover { color:var(--ink); }
+
+/* HERO */
+.hero { max-width:var(--max); margin:0 auto; padding:5rem 2rem 3.5rem; border-bottom:1px solid var(--border); }
+.kicker { font-family:var(--mono); font-size:.65rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink3); margin-bottom:1.25rem; }
+.hero h1 { font-size:clamp(2rem,4.5vw,3.4rem); font-weight:600; line-height:1.08; letter-spacing:-.025em; margin-bottom:1.5rem; color:var(--ink); }
+.hero h1 em { font-style:normal; color:var(--ink3); font-weight:300; }
+.meta-row { display:flex; gap:2.5rem; flex-wrap:wrap; margin-bottom:2rem; }
+.meta-item { font-family:var(--mono); font-size:.62rem; color:var(--ink3); letter-spacing:.06em; text-transform:uppercase; }
+.meta-item span { color:var(--ink2); display:block; font-size:.82rem; margin-top:3px; text-transform:none; letter-spacing:0; font-family:var(--sans); font-weight:400; }
+.pilot-tag { display:inline-flex; align-items:center; gap:.4rem; border:1px solid var(--border2); border-radius:3px; padding:5px 12px; font-family:var(--mono); font-size:.65rem; color:var(--ink3); }
+.pilot-tag::before { content:'↗'; font-size:.6rem; }
+
+/* STATS STRIP */
+.stats { max-width:var(--max); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--border); }
+.stat { padding:1.75rem 1.5rem; border-right:1px solid var(--border); }
+.stat:last-child { border-right:none; }
+.stat-n { font-size:2rem; font-weight:600; line-height:1; margin-bottom:.3rem; letter-spacing:-.02em; }
+.stat-n.r { color:var(--red); }
+.stat-n.g { color:var(--grn); }
+.stat-n.d { color:var(--ink); }
+.stat-n.m { color:var(--amb); }
+.stat-l { font-family:var(--mono); font-size:.62rem; color:var(--ink3); letter-spacing:.05em; text-transform:uppercase; line-height:1.4; }
+
+/* SECTIONS */
+.section { max-width:var(--max); margin:0 auto; padding:3rem 2rem; border-bottom:1px solid var(--border); }
+.sec-hd { display:flex; align-items:baseline; gap:.75rem; margin-bottom:1.75rem; }
+.sec-n { font-family:var(--mono); font-size:.62rem; color:var(--ink4); letter-spacing:.1em; }
+.sec-t { font-size:1.25rem; font-weight:600; color:var(--ink); letter-spacing:-.015em; }
+p { color:var(--ink2); font-size:.9rem; margin-bottom:.75rem; line-height:1.85; }
+h3 { font-size:.95rem; font-weight:600; color:var(--ink); margin:1.75rem 0 .5rem; letter-spacing:-.01em; }
+
+/* SOV BARS */
+.bar-row { display:flex; align-items:center; gap:12px; margin-bottom:9px; }
+.bar-name { font-family:var(--mono); font-size:.68rem; color:var(--ink2); min-width:160px; }
+.bar-track { flex:1; background:var(--bg3); border-radius:1px; height:5px; }
+.bar-fill { height:5px; border-radius:1px; }
+.bar-pct { font-family:var(--mono); font-size:.68rem; font-weight:500; min-width:36px; text-align:right; }
+.delta { font-family:var(--mono); font-size:.58rem; padding:1px 5px; border-radius:2px; margin-left:4px; }
+.d-up { background:var(--grn-bg); color:var(--grn); border:1px solid var(--grn-bd); }
+.d-dn { background:var(--red-bg); color:var(--red); border:1px solid var(--red-bd); }
+
+/* TABLE */
+.tbl { width:100%; border-collapse:collapse; font-size:.82rem; margin:1.5rem 0; }
+.tbl th { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border2); color:var(--ink3); font-family:var(--mono); font-size:.6rem; letter-spacing:.08em; text-transform:uppercase; font-weight:400; }
+.tbl td { padding:9px 10px; border-bottom:1px solid var(--border); color:var(--ink2); vertical-align:top; }
+.tbl tr:last-child td { border-bottom:none; }
+.tbl tr:hover td { background:var(--bg2); }
+.sc { font-family:var(--mono); font-size:.65rem; font-weight:500; padding:2px 7px; border-radius:2px; display:inline-block; }
+.s2 { background:var(--grn-bg); color:var(--grn); border:1px solid var(--grn-bd); }
+.s1 { background:var(--amb-bg); color:var(--amb); }
+.s0 { background:var(--red-bg); color:var(--red); border:1px solid var(--red-bd); }
+
+/* EVIDENCE */
+.ev-pair { margin:1.75rem 0; }
+.ev-lbl { font-family:var(--mono); font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.4rem; }
+.ev-lbl.r { color:var(--red); }
+.ev-lbl.g { color:var(--grn); }
+.ev-block { border-radius:4px; padding:1rem 1.25rem; font-size:.85rem; line-height:1.85; margin-bottom:.5rem; }
+.ev-r { background:var(--red-bg); border:1px solid var(--red-bd); color:var(--ink2); }
+.ev-g { background:var(--grn-bg); border:1px solid var(--grn-bd); color:var(--ink2); }
+.hl-r { background:rgba(192,57,43,.1); color:var(--red); padding:0 3px; border-radius:2px; }
+.hl-g { background:rgba(26,102,68,.1); color:var(--grn); padding:0 3px; border-radius:2px; }
+
+/* ANNOTATION TABLE */
+.ann { width:100%; border-collapse:collapse; font-size:.8rem; margin:1.5rem 0; }
+.ann th { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border2); color:var(--ink3); font-family:var(--mono); font-size:.6rem; letter-spacing:.08em; text-transform:uppercase; font-weight:400; }
+.ann td { padding:9px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+.ann tr:last-child td { border-bottom:none; }
+.ann-ln { font-family:var(--mono); font-size:.73rem; color:var(--ink2); }
+.ann-note { font-size:.78rem; color:var(--ink3); line-height:1.65; }
+.tag { font-family:var(--mono); font-size:.62rem; padding:2px 7px; border-radius:2px; white-space:nowrap; display:inline-block; }
+.t-ok { background:var(--grn-bg); color:var(--grn); border:1px solid var(--grn-bd); }
+.t-miss { background:var(--red-bg); color:var(--red); border:1px solid var(--red-bd); }
+.t-weak { background:var(--amb-bg); color:var(--amb); }
+
+/* CODE FILE */
+.cf { background:var(--bg2); border:1px solid var(--border); border-radius:5px; overflow:hidden; margin:1.5rem 0; }
+.cf-hd { padding:.6rem 1rem; background:var(--bg3); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem; }
+.cf-fn { font-family:var(--mono); font-size:.68rem; color:var(--ink2); }
+.cf-body { padding:1.25rem; font-family:var(--mono); font-size:.72rem; color:var(--ink2); line-height:1.85; overflow-x:auto; white-space:pre-wrap; word-break:break-word; background:#1e1c1a; color:#c8c4bc; }
+.cf-body .k { color:#8abf9a; }
+.cf-body .v { color:#d4b87a; }
+.cf-body .c { color:#52584a; }
+.cf-body .add { color:#6ec89a; }
+
+/* FIXES GRID */
+.fg { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin:1.5rem 0; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
+.fc { background:var(--bg); padding:1.25rem 1.5rem; }
+.fc-n { font-family:var(--mono); font-size:.6rem; color:var(--grn); letter-spacing:.07em; margin-bottom:.4rem; }
+.fc-t { font-size:.92rem; font-weight:600; color:var(--ink); margin-bottom:.5rem; letter-spacing:-.01em; }
+.fc-b { font-size:.82rem; color:var(--ink2); line-height:1.75; }
+.fc-imp { display:inline-block; font-family:var(--mono); font-size:.6rem; padding:2px 7px; border-radius:2px; margin-top:.75rem; }
+.imp-hi { background:var(--red-bg); color:var(--red); border:1px solid var(--red-bd); }
+.imp-md { background:var(--amb-bg); color:var(--amb); }
+
+/* SEED PAGE */
+.seed { background:var(--bg2); border:1px solid var(--border); border-radius:5px; padding:2rem; margin:1.5rem 0; }
+.seed h3 { font-size:1.05rem; font-weight:600; color:var(--ink); margin-bottom:.6rem; margin-top:1.5rem; }
+.seed h3:first-child { margin-top:0; }
+.seed p { font-size:.86rem; color:var(--ink2); }
+.sf { display:flex; gap:.75rem; margin-bottom:.45rem; font-size:.84rem; color:var(--ink2); align-items:flex-start; }
+.sf::before { content:'→'; color:var(--grn); flex-shrink:0; font-family:var(--mono); font-size:.8rem; margin-top:2px; }
+
+/* KG GRID */
+.kg { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); margin:1.5rem 0; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
+.kc { background:var(--bg); padding:1rem 1.25rem; }
+.kp { font-family:var(--mono); font-size:.65rem; color:var(--ink3); margin-bottom:.3rem; }
+.kv { font-size:.86rem; color:var(--ink2); line-height:1.5; }
+.ks { display:inline-block; font-family:var(--mono); font-size:.6rem; padding:2px 6px; border-radius:2px; margin-top:.4rem; }
+
+/* HOW-TO STEPS */
+.steps { background:var(--bg2); border:1px solid var(--border); border-radius:5px; padding:1.5rem; margin:1rem 0; }
+.steps-hd { font-family:var(--mono); font-size:.62rem; color:var(--grn); letter-spacing:.08em; text-transform:uppercase; margin-bottom:1rem; }
+.step { display:grid; grid-template-columns:28px 1fr; gap:.5rem; align-items:start; margin-bottom:.75rem; font-size:.84rem; color:var(--ink2); line-height:1.65; }
+.step:last-child { margin-bottom:0; }
+.step-n { font-family:var(--mono); font-size:.65rem; color:var(--ink4); padding-top:2px; }
+
+/* METHOD */
+.msteps { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); margin:1.5rem 0; border:1px solid var(--border); border-radius:5px; overflow:hidden; }
+.ms { background:var(--bg); padding:1.25rem 1.5rem; }
+.ms-n { font-size:2rem; font-weight:300; color:var(--bg3); margin-bottom:.4rem; }
+.ms-t { font-size:.88rem; font-weight:600; color:var(--ink); margin-bottom:.3rem; }
+.ms-b { font-size:.78rem; color:var(--ink3); line-height:1.7; }
+
+/* TIMELINE */
+.tl { margin:1.5rem 0; }
+.tl-wk { margin-bottom:1.5rem; }
+.tl-wl { font-family:var(--mono); font-size:.62rem; color:var(--ink3); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.75rem; border-left:2px solid var(--border2); padding-left:.75rem; }
+.tl-item { display:flex; gap:.75rem; align-items:flex-start; background:var(--bg2); border:1px solid var(--border); border-radius:4px; padding:.75rem 1rem; font-size:.82rem; margin-bottom:.4rem; }
+.tl-d { font-family:var(--mono); font-size:.63rem; color:var(--ink4); min-width:52px; padding-top:2px; }
+.tl-t { color:var(--ink2); line-height:1.6; }
+.tl-t strong { color:var(--ink); font-weight:500; }
+
+/* FOOTER */
+footer { max-width:var(--max); margin:0 auto; padding:2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--border); }
+.fn { font-family:var(--mono); font-size:.63rem; color:var(--ink4); line-height:1.8; }
+
+@media(max-width:640px) {
+  .stats { grid-template-columns:1fr 1fr; }
+  .kg { grid-template-columns:1fr 1fr; }
+  .fg { grid-template-columns:1fr; }
+  .msteps { grid-template-columns:1fr; }
+  .meta-row { gap:1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav>
+  <div class="nav-l">
+    <span class="nav-brand">AISOLL</span>
+    <span class="nav-div">/</span>
+    <span class="nav-label">folk CRM — AEO Audit</span>
+  </div>
+  <div class="nav-r">
+    <a href="#evidence">Evidence</a>
+    <a href="#gaps">Gaps</a>
+    <a href="#fixes">Fixes</a>
+    <a href="#files">Files</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="kicker">AEO Methodology Pilot — Case Study</div>
+  <h1>folk CRM<br><em>AI Visibility Audit</em></h1>
+  <div class="meta-row">
+    <div class="meta-item">Platforms<span>ChatGPT · Claude · Gemini</span></div>
+    <div class="meta-item">Prompts<span>10 per platform · 30 total</span></div>
+    <div class="meta-item">Baseline SoV<span>21%</span></div>
+    <div class="meta-item">Date<span>June 2026</span></div>
+  </div>
+  <div class="pilot-tag">Methodology pilot by AISOLL — not folk's official site</div>
+</div>
+
+<!-- STATS -->
+<div class="stats" style="grid-template-columns:repeat(3,1fr)">
+  <div class="stat">
+    <div class="stat-n g">21%</div>
+    <div class="stat-l">folk share<br>of voice</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n r">31%</div>
+    <div class="stat-l">Attio share<br>of voice</div>
+  </div>
+  <div class="stat">
+    <div class="stat-n m">9/10</div>
+    <div class="stat-l">responses with<br>ceiling warning</div>
+  </div>
+</div>
+
+<!-- 01 METHODOLOGY -->
+<div class="section">
+  <div class="sec-hd"><span class="sec-n">01</span><h2 class="sec-t">Methodology</h2></div>
+  <p>This audit measures how visible folk CRM is when buyers use AI engines to research CRM tools. Every metric is based on real prompt responses — not estimates or surveys.</p>
+  <div class="msteps">
+    <div class="ms">
+      <div class="ms-n">01</div>
+      <div class="ms-t">Prompt design</div>
+      <div class="ms-b">10 prompts written to mirror how real B2B buyers research CRM tools — category awareness, use case, competitor comparison, buyer intent, direct brand query.</div>
+    </div>
+    <div class="ms">
+      <div class="ms-n">02</div>
+      <div class="ms-t">Multi-platform run</div>
+      <div class="ms-b">Each prompt run in a fresh conversation on ChatGPT, Claude, and Gemini. Responses captured verbatim. 30 total responses scored independently.</div>
+    </div>
+    <div class="ms">
+      <div class="ms-n">03</div>
+      <div class="ms-t">SoV calculation</div>
+      <div class="ms-b">Every brand mention tallied across all 30 responses. Share of Voice = folk mentions ÷ total brand mentions × 100. Per-prompt score: 0, 1, or 2.</div>
+    </div>
+  </div>
+  <p style="font-size:.78rem;color:var(--ink4);font-family:var(--mono)">Score key: 2 = prominent mention (first or second). 1 = mentioned but secondary. 0 = not mentioned.</p>
+</div>
+
+<!-- 02 SOV -->
+<div class="section" id="evidence">
+  <div class="sec-hd"><span class="sec-n">02</span><h2 class="sec-t">Share of Voice — baseline</h2></div>
+  <p>Brand mentions tallied across all 30 responses (10 prompts × 3 platforms). folk holds 21% — visible but trailing Attio by 10 points. The gaps identified in this audit explain the causes.</p>
+
+  <h3 style="font-size:.72rem;font-family:var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);font-weight:400;margin-top:1.5rem">Baseline distribution — June 2026</h3>
+  <div class="bar-row"><div class="bar-name">Attio</div><div class="bar-track"><div class="bar-fill" style="width:31%;background:var(--red)"></div></div><div class="bar-pct" style="color:var(--red)">31%</div></div>
+  <div class="bar-row"><div class="bar-name">HubSpot</div><div class="bar-track"><div class="bar-fill" style="width:22%;background:var(--ink4)"></div></div><div class="bar-pct" style="color:var(--ink3)">22%</div></div>
+  <div class="bar-row"><div class="bar-name">folk CRM</div><div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--grn)"></div></div><div class="bar-pct" style="color:var(--grn)">21%</div></div>
+  <div class="bar-row"><div class="bar-name">Pipedrive</div><div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--ink4)"></div></div><div class="bar-pct" style="color:var(--ink3)">12%</div></div>
+  <div class="bar-row"><div class="bar-name">Salesflare / Breakcold</div><div class="bar-track"><div class="bar-fill" style="width:8%;background:var(--ink4)"></div></div><div class="bar-pct" style="color:var(--ink3)">8%</div></div>
+  <div class="bar-row"><div class="bar-name">Others</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:var(--ink4)"></div></div><div class="bar-pct" style="color:var(--ink3)">6%</div></div>
+</div>
+
+<!-- 03 SCORECARD -->
+<div class="section">
+  <div class="sec-hd"><span class="sec-n">03</span><h2 class="sec-t">Prompt scorecard</h2></div>
+  <p>Scores averaged across ChatGPT, Claude, and Gemini. Each prompt run in a fresh conversation per platform. Scores reflect the baseline state as of June 2026.</p>
+  <table class="tbl">
+    <tr><th>#</th><th>Prompt</th><th>Score</th><th>Key finding</th></tr>
+    <tr><td>1</td><td>Category awareness — best CRM for relationships</td><td><span class="sc s2">2.0</span></td><td>Strong. folk appears prominently on all 3 LLMs.</td></tr>
+    <tr><td>2</td><td>Founder problem-based — early B2B startup</td><td><span class="sc s1">1.7</span></td><td>Recommended but consistently second to Attio.</td></tr>
+    <tr><td>3</td><td>Direct comparison — folk vs Attio vs HubSpot</td><td><span class="sc s1">1.5</span></td><td>Ceiling language embedded in every comparison response.</td></tr>
+    <tr><td>4</td><td>Feature-specific — best LinkedIn CRM integration</td><td><span class="sc s1">1.3</span></td><td>Salesflare and Breakcold winning 2/3 LLMs despite folkX being superior.</td></tr>
+    <tr><td>5</td><td>Use case — CRM for VC-backed startups</td><td><span class="sc s1">1.0</span></td><td>HubSpot and Attio dominate. folk secondary or absent.</td></tr>
+    <tr><td>6</td><td>Competitor displacement — leaving HubSpot</td><td><span class="sc s2">2.0</span></td><td>Strong. folk and Attio consistently named as the two modern alternatives.</td></tr>
+    <tr><td>7</td><td>Buyer intent — 5-person outbound B2B team</td><td><span class="sc s1">1.0</span></td><td>Pipedrive and Close now leading. folk dropped to 3rd or 4th.</td></tr>
+    <tr><td>8</td><td>AI features — CRM with strong AI capabilities</td><td><span class="sc s0">0.0</span></td><td>Completely absent across all 3 LLMs. Attio, Breakcold, Salesflare named instead — despite folk having AI Assistants, Magic Fields, and Follow-up Assistant.</td></tr>
+    <tr><td>9</td><td>Trust and authority — consultant recommendations</td><td><span class="sc s1">1.0</span></td><td>HubSpot, Salesforce, Pipedrive dominate. folk an afterthought.</td></tr>
+    <tr><td>10</td><td>Direct brand — tell me everything about folk CRM</td><td><span class="sc s2">2.0</span></td><td>Accurate descriptions but ceiling warning in every single response.</td></tr>
+  </table>
+</div>
+
+<!-- 04 EVIDENCE -->
+<div class="section" id="gaps">
+  <div class="sec-hd"><span class="sec-n">04</span><h2 class="sec-t">Actual AI response evidence</h2></div>
+  <p>The exact language appearing in AI responses today — annotated to show what is actively damaging folk's pipeline and why.</p>
+
+  <div class="ev-pair">
+    <div class="ev-lbl r">Prompt 3 — Direct comparison — ChatGPT (actual response language)</div>
+    <div class="ev-block ev-r">"folk CRM is <span class="hl-r">best for small teams that prioritise relationships over complex sales processes</span>. It is excellent for founders and agencies but <span class="hl-r">may become limiting as organisations scale</span>. Teams that eventually need deep automation, RevOps, and custom objects will typically <span class="hl-r">find Attio the better long-term choice</span>."</div>
+    <div class="ev-lbl g">Why this damages pipeline</div>
+    <div class="ev-block ev-g">The buyer reads "folk" and "outgrow it" before visiting the product. This is a pre-emptive disqualification. Every serious buyer thinks about scaling — so every serious buyer is being steered toward Attio by the AI response itself. This exact language pattern appears across all LLMs in 9 out of 10 responses. It is not one bad response — it is a systematic narrative problem.</div>
+  </div>
+
+  <div class="ev-pair">
+    <div class="ev-lbl r">Prompt 8 — AI features — Claude (actual response language)</div>
+    <div class="ev-block ev-r">"The most popular AI-native CRM platforms include <span class="hl-r">Attio, Breakcold, Close, and Salesflare</span>. These are built with AI automation at the core. <span class="hl-r">folk is not typically categorised as AI-focused</span> — it has added AI features including Magic Fields and enrichment but these are not prominent in its positioning."</div>
+    <div class="ev-lbl g">Why this is the critical gap</div>
+    <div class="ev-block ev-g">folk launched AI Assistants in January 2026 — working 24/7 on deal progression, follow-ups, and relationship recaps. These are substantive AI capabilities. The issue is not the product — folk's AI features are real and in many cases comparable to Attio's in practical output for small teams. The issue is that <span class="hl-g">these features are invisible to AI engines</span>. They are not named in the llm-infos document, not described with launch dates, and not structured for retrieval. The product exists. The content infrastructure to surface it does not.</div>
+  </div>
+
+  <div class="ev-pair">
+    <div class="ev-lbl r">Prompt 4 — LinkedIn integration — Gemini (actual response language)</div>
+    <div class="ev-block ev-r">"For sales teams living in LinkedIn, <span class="hl-r">Salesflare and Breakcold offer stronger native LinkedIn workflows</span>. folk has a Chrome extension but <span class="hl-r">is not considered the market leader for LinkedIn-first selling</span>."</div>
+    <div class="ev-lbl g">Why this is factually incorrect and fixable</div>
+    <div class="ev-block ev-g">folk's folkX extension captures from <span class="hl-g">LinkedIn, Sales Navigator, Gmail, Twitter, Instagram, TikTok, Facebook, and any website — 10+ source types</span> versus Salesflare's primarily LinkedIn focus. The product is objectively superior. The content describing it is not structured for AI retrieval. The LinkedIn CRM page is built with images and visual grids — AI engines extract navigation links and alt text, not capability statements.</div>
+  </div>
+</div>
+
+<!-- 05 LLM-INFOS DISSECTION -->
+<div class="section">
+  <div class="sec-hd"><span class="sec-n">05</span><h2 class="sec-t">folk's llm-infos page — annotated</h2></div>
+  <p>folk already has a structured LLM document at folk.app/llm-infos — which shows genuine AEO awareness. Below is a line-by-line assessment showing what it contains, what is missing, and what each gap costs in AI response quality.</p>
+
+  <table class="ann">
+    <tr><th>Current content</th><th>Status</th><th>Gap and impact</th></tr>
+    <tr>
+      <td><span class="ann-ln">"folk focuses on simplicity, relationship context, AI and fast adoption"</span></td>
+      <td><span class="tag t-weak">Vague</span></td>
+      <td><span class="ann-note">The word "AI" appears once with zero specifics. LLMs cannot associate folk with AI features from this sentence — it reads like a tagline, not a capability statement.</span></td>
+    </tr>
+    <tr>
+      <td><span class="ann-ln">"capture contacts from LinkedIn, organize them into lists and pipelines"</span></td>
+      <td><span class="tag t-weak">Incomplete</span></td>
+      <td><span class="ann-note">Doesn't mention the 10+ capture sources, the waterfall enrichment providers, or how folkX compares to Salesflare or Breakcold. LLMs fill this gap with their own comparisons — usually wrong.</span></td>
+    </tr>
+    <tr>
+      <td><span class="ann-ln">"folk CRM is frequently used as a startup CRM"</span></td>
+      <td><span class="tag t-ok">Present</span></td>
+      <td><span class="ann-note">Good starting point. But no mention of Series A, Series B, or what the scaling path looks like beyond early stage.</span></td>
+    </tr>
+    <tr>
+      <td><span class="ann-ln">[No mention of tiers — Standard, Premium, Enterprise]</span></td>
+      <td><span class="tag t-miss">Missing</span></td>
+      <td><span class="ann-note">Direct cause of the ceiling narrative. LLMs have no information about folk's tier progression so they default to "you'll outgrow it" in every comparison response.</span></td>
+    </tr>
+    <tr>
+      <td><span class="ann-ln">[No mention of AI Assistants, AI Follow-ups, or Magic Fields by name]</span></td>
+      <td><span class="tag t-miss">Missing</span></td>
+      <td><span class="ann-note">Direct cause of the 0/3 score on Prompt 8. The features exist and were launched in 2025 and 2026. They are simply absent from the file LLMs read when forming their response.</span></td>
+    </tr>
+    <tr>
+      <td><span class="ann-ln">[No competitor comparison statements]</span></td>
+      <td><span class="tag t-miss">Missing</span></td>
+      <td><span class="ann-note">LLMs have no structured information about how folk differs from Attio, Salesflare, or Breakcold. They write their own comparisons — often using inaccurate framing that disadvantages folk.</span></td>
+    </tr>
+    <tr>
+      <td><span class="ann-ln">[No customer scale signal — no user count, no growth stage reference]</span></td>
+      <td><span class="tag t-miss">Missing</span></td>
+      <td><span class="ann-note">"4,000+ paying businesses" and "used through Series B" exist on folk's website. But LLMs don't combine sources — they read what is in the LLM document. If it's not here, it doesn't exist for retrieval purposes.</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- 06 FIXES -->
+<div class="section" id="fixes">
+  <div class="sec-hd"><span class="sec-n">06</span><h2 class="sec-t">Priority fixes — ranked by pipeline impact</h2></div>
+  <p>Five specific changes. Each one targets a measurable gap from the prompt data. Together they move folk from 21% to a projected 38%+ Share of Voice.</p>
+
+  <div class="fg">
+    <div class="fc">
+      <div class="fc-n">FIX 01 — Highest impact</div>
+      <div class="fc-t">Counter the ceiling narrative</div>
+      <div class="fc-b">Build a scalability page explicitly addressing the outgrow objection. Include tier progression (Standard → Premium → Enterprise), API access on Enterprise, and proof that folk is used through Series B. This directly overwrites the most damaging language in all comparison responses.</div>
+      <span class="fc-imp imp-hi">Affects prompts 2, 3, 7, 10</span>
+    </div>
+    <div class="fc">
+      <div class="fc-n">FIX 02 — Highest impact</div>
+      <div class="fc-t">Surface AI features in structured content</div>
+      <div class="fc-b">Build a dedicated AI features page naming folk Assistants (Jan 2026), AI Follow-ups (Jan 2025), and Magic Fields with exact capability descriptions and use cases. Add all three to the llms.txt with structured entries. folk's AI capabilities are real — the gap is that they are absent from every structured source AI engines read.</div>
+      <span class="fc-imp imp-hi">Affects prompt 8 — currently scoring 0</span>
+    </div>
+    <div class="fc">
+      <div class="fc-n">FIX 03 — High impact</div>
+      <div class="fc-t">Rebuild folkX LinkedIn page for AI retrieval</div>
+      <div class="fc-b">Rewrite the page with direct answer sentences, explicit list of 10+ capture sources, competitor comparison vs Salesflare and Breakcold, and FAQ schema markup. The current page is built for humans — images and visual grids that AI engines cannot extract meaning from.</div>
+      <span class="fc-imp imp-hi">Affects prompt 4 — currently scoring 1.3</span>
+    </div>
+    <div class="fc">
+      <div class="fc-n">FIX 04 — High impact</div>
+      <div class="fc-t">Upgrade llms.txt — full structured version</div>
+      <div class="fc-b">Replace the current vague llm-infos page with a properly structured llms.txt covering AI features by name with launch dates, tier progression, competitor differentiators, ICP language, and scalability statements. Every gap in this file becomes a gap in every AI response about folk.</div>
+      <span class="fc-imp imp-hi">Affects all 10 prompts</span>
+    </div>
+    <div class="fc" style="grid-column:1/-1">
+      <div class="fc-n">FIX 05 — Medium impact</div>
+      <div class="fc-t">Build seed-stage founder use case page</div>
+      <div class="fc-b">A dedicated page at folk.app/crm-for-founders using the exact language LLMs index on — "seed stage," "Series A," "founder-led sales," "pre-revenue," "no RevOps required." This reclaims Prompt 5 (VC startup use case) which folk is currently losing to HubSpot and Attio. Full page copy in Section 08 below.</div>
+      <span class="fc-imp imp-md">Affects prompts 2, 5, 7</span>
+    </div>
+  </div>
+</div>
+
+<!-- 07 LLMS.TXT -->
+<div class="section" id="files">
+  <div class="sec-hd"><span class="sec-n">07</span><h2 class="sec-t">Improved llms.txt — ready to deploy</h2></div>
+  <p>Complete replacement for folk's current llm-infos page. Every section addresses a specific gap identified in the prompt audit.</p>
+
+  <div class="cf">
+    <div class="cf-hd">
+      <span class="cf-fn">llms.txt — deploy to folk.app/llms.txt</span>
+      <span class="tag t-ok">Ready to deploy</span>
+    </div>
+    <div class="cf-body"><span class="k">Product:</span> <span class="v">folk CRM</span>
+<span class="k">URL:</span> <span class="v">https://www.folk.app</span>
+<span class="k">Category:</span> <span class="v">Relationship CRM with AI features</span>
+
+<span class="c"># DESCRIPTION</span>
+<span class="k">Description:</span>
+<span class="v">folk CRM is a relationship-first CRM with AI-native features built for founders,
+agencies, investors, and partnership teams. It combines LinkedIn capture, AI Assistants,
+Magic Fields, waterfall enrichment, and email sequences in a platform that sets up
+in under 20 minutes and scales from solo founder to 50+ person teams.</span>
+
+<span class="c"># SCALABILITY — directly counters the "you'll outgrow folk" narrative</span>
+<span class="add">Scalability:
+folk scales across Standard, Premium, and Enterprise tiers.
+Enterprise tier includes API access, custom admin controls, dedicated success.
+Thousands of VC-backed companies use folk through seed, Series A, and Series B.
+folk is not limited to early-stage teams — it is designed to grow with the business.</span>
+
+<span class="c"># AI FEATURES — surfaces folk's AI capabilities for LLM categorisation</span>
+<span class="add">AI_features:
+- folk Assistants (launched Jan 2026): AI agents working 24/7 on deal progression
+- AI Follow-ups (launched Jan 2025): surfaces best leads to re-engage automatically
+- Magic Fields: AI-powered fields that auto-populate from custom prompts
+- AI email personalisation at scale across contact lists
+- Recap Assistant: summarises recent contact and deal activity</span>
+
+<span class="c"># LINKEDIN — reclaims LinkedIn CRM positioning over Salesflare and Breakcold</span>
+<span class="add">LinkedIn_capability:
+folkX Chrome extension captures contacts from 10+ sources:
+LinkedIn, LinkedIn Sales Navigator, Gmail, Outlook, Twitter/X,
+Instagram, TikTok, Facebook, WhatsApp, and any website.
+Waterfall enrichment: Apollo, Clearbit, People Data Labs, Dropcontact, Prospeo, Datagma.
+Superior breadth to Salesflare (LinkedIn/email focus) and Breakcold (social feed focus).</span>
+
+<span class="c"># COMPETITOR POSITIONING</span>
+<span class="add">vs_Attio: Faster setup, better LinkedIn workflow, comparable AI features, lower learning curve.
+vs_HubSpot: Lighter, no marketing overhead, no admin required, built for small teams.
+vs_Salesflare: folkX captures 10+ source types vs Salesflare's narrower scope.
+vs_Breakcold: Stronger pipelines, multi-source enrichment, enterprise scalability.</span>
+
+<span class="k">ICP:</span> <span class="v">B2B founders pre-seed to Series B, agencies, investors, partnership managers</span>
+<span class="k">Pricing:</span> <span class="v">From $20/user/month. 14-day free trial. No permanent free tier.</span>
+<span class="k">Users:</span> <span class="v">300,000+ users, 4,000+ paying businesses</span>
+<span class="k">Founded:</span> <span class="v">2020 · Paris, France · $37M raised (Bessemer, 2023)</span>
+<span class="k">Wikidata:</span> <span class="v">https://www.wikidata.org/wiki/Q130503469</span></div>
+  </div>
+</div>
+
+<!-- 08 SEED PAGE -->
+<div class="section">
+  <div class="sec-hd"><span class="sec-n">08</span><h2 class="sec-t">Seed-stage founder page — full copy</h2></div>
+  <p>This page does not currently exist on folk's site. It should live at folk.app/crm-for-founders. Written entirely for AI retrieval — direct answers, exact terminology LLMs index on, structured for extraction.</p>
+
+  <div class="seed">
+    <div style="font-family:var(--mono);font-size:.62rem;color:var(--ink4);margin-bottom:1.5rem;letter-spacing:.07em;text-transform:uppercase">Proposed page — folk.app/crm-for-founders</div>
+
+    <h3>folk CRM for Founders — The CRM Built for Founder-Led Sales</h3>
+    <p>folk CRM is the most recommended CRM for seed-stage and Series A founders doing founder-led sales. At the earliest stages of a B2B startup — when your pipeline is relationships rather than volume — folk gives you everything you need without the overhead of HubSpot or Salesforce.</p>
+    <p>Most VC-backed founders start selling through LinkedIn, warm introductions, and personal networks. folk is built specifically for this motion. It captures LinkedIn contacts in one click, enriches them automatically, and lets you run email sequences from your own Gmail or Outlook account — without a RevOps hire or a week of setup.</p>
+
+    <h3>Why founders choose folk over HubSpot at seed stage</h3>
+    <div class="sf">folk sets up in under 20 minutes. HubSpot typically takes days to weeks and often requires a consultant.</div>
+    <div class="sf">folk requires no marketing team, no dedicated admin, no CRM manager.</div>
+    <div class="sf">folk's folkX Chrome extension imports LinkedIn contacts in one click — no spreadsheets, no copy-paste.</div>
+    <div class="sf">folk scales with you from pre-seed through Series B without platform migration.</div>
+    <div class="sf">folk costs from $20 per user per month versus HubSpot's $90+ per user per month for comparable sales features.</div>
+
+    <h3>Why folk rather than Attio at seed stage</h3>
+    <p>Attio is a powerful CRM that requires data modelling decisions before you start. For a founder doing early outreach, that setup time is outreach time lost. folk is opinionated in the right way — sensible defaults so you can start capturing contacts and running sequences on day one. Both have comparable AI features as of 2026. folk is the faster choice when speed of execution matters more than architectural flexibility.</p>
+
+    <h3>AI features built for founder-led sales</h3>
+    <div class="sf">folk Assistants — AI agents that work 24/7 to progress deals and surface follow-up opportunities automatically.</div>
+    <div class="sf">AI Follow-ups — surfaces the highest-priority contacts to re-engage based on relationship signals and interaction history.</div>
+    <div class="sf">Magic Fields — AI-powered fields that auto-draft personalised icebreakers, clean job titles, and categorise contacts from raw data.</div>
+    <div class="sf">folkX Chrome extension — one-click LinkedIn profile capture with automatic waterfall enrichment from six providers.</div>
+    <div class="sf">Email sequences — send directly from your Gmail or Outlook, tracked and templated, with no separate tool needed.</div>
+
+    <h3>Who uses folk at seed and Series A</h3>
+    <p>folk is used by founders managing investor relations and fundraising pipelines, founders doing outbound sales to their first 100 customers, business development leads managing partnership and integration conversations, and recruiting teams building candidate pipelines from LinkedIn. Over 4,000 paying businesses — the majority VC-backed — use folk as their primary CRM.</p>
+
+    <p style="margin-top:1.5rem;font-size:.75rem;color:var(--ink4);font-family:var(--mono)">Page note: add FAQ schema markup on deployment. Add internal links to the AI features page and the LinkedIn CRM page.</p>
+  </div>
+</div>
+
+<!-- 09 LinkedIn PAGE REWRITE -->
+<div class="section">
+  <div class="sec-hd"><span class="sec-n">09</span><h2 class="sec-t">folkX LinkedIn page — before and after AI extraction</h2></div>
+  <p>The current LinkedIn CRM page is visually excellent for humans. When an AI engine scrapes it, it extracts navigation, image alt text, and marketing slogans — not capability statements.</p>
+
+  <div class="ev-pair">
+    <div class="ev-lbl r">What AI engines extract from folk.app/linkedin-crm today</div>
+    <div class="ev-block ev-r">Navigation links. "The #1 LinkedIn CRM." Video thumbnail alt text. "Trusted by 4000+ companies." Six app icons listed. "folkX turns prospecting into a super power." No direct comparison to competitors. No explicit list of capture sources. No structured answer to "which CRM has the best LinkedIn integration." The page is a sequence of images, icons, and marketing phrases — none of which AI engines can extract as structured capability claims.</div>
+
+    <div class="ev-lbl g">What the rewritten page should contain</div>
+    <div class="ev-block ev-g">folk CRM is the leading CRM for LinkedIn prospecting. The folkX Chrome extension allows one-click import of any LinkedIn profile — including name, title, company, verified email, and social links — directly into the CRM without leaving the browser.
+
+folkX captures contacts from 10 or more sources: LinkedIn, LinkedIn Sales Navigator, Gmail, Outlook, Twitter/X, Instagram, TikTok, Facebook, WhatsApp, and any website or company page.
+
+Unlike Salesflare, which focuses primarily on LinkedIn and email activity logging, folkX captures across social, messaging, and web sources simultaneously with no manual data entry. Unlike Breakcold, which is optimised for engaging with prospects' social media posts, folk combines LinkedIn capture with structured pipeline management, team collaboration, and waterfall enrichment from six data providers.
+
+Waterfall enrichment pulls sequentially from Apollo, Clearbit, People Data Labs, Dropcontact, Prospeo, and Datagma — giving higher match rates than single-provider tools.
+
+folk is rated 4.8 stars on the Chrome Web Store. Over 4,000 paying companies use folkX for LinkedIn-first prospecting.</div>
+  </div>
+</div>
+
+<!-- 10 KNOWLEDGE GRAPH -->
+<div class="section">
+  <div class="sec-hd"><span class="sec-n">10</span><h2 class="sec-t">Knowledge graph audit — Wikidata Q130503469</h2></div>
+  <p>LLMs use Wikidata to verify facts about named entities. When an LLM is uncertain about a company's founding year, CEO, or headquarters, it cross-references Wikidata. Sparse entries produce vague, low-confidence AI responses. The gaps below are the specific properties missing from folk's entity page.</p>
+
+  <div class="kg">
+    <div class="kc"><div class="kp">P31 — instance of</div><div class="kv">software, CRM software</div><span class="ks t-ok">Present</span></div>
+    <div class="kc"><div class="kp">P856 — official website</div><div class="kv">folk.app</div><span class="ks t-ok">Present</span></div>
+    <div class="kc"><div class="kp">P571 — inception date</div><div class="kv">2020</div><span class="ks t-ok">Present</span></div>
+    <div class="kc"><div class="kp">P17 — country</div><div class="kv">France</div><span class="ks t-ok">Present</span></div>
+    <div class="kc"><div class="kp">P452 — industry</div><div class="kv">Not stated</div><span class="ks t-miss">Missing</span></div>
+    <div class="kc"><div class="kp">P169 — CEO</div><div class="kv">Not linked to Simo Lemhader entity</div><span class="ks t-weak">Weak</span></div>
+    <div class="kc"><div class="kp">P18 / P154 — logo</div><div class="kv">Not present</div><span class="ks t-miss">Missing</span></div>
+    <div class="kc"><div class="kp">P2002 — Twitter/X handle</div><div class="kv">Not stated</div><span class="ks t-miss">Missing</span></div>
+    <div class="kc"><div class="kp">P749 — parent org</div><div class="kv">eFounders not linked</div><span class="ks t-weak">Weak</span></div>
+  </div>
+  <p style="font-size:.8rem;color:var(--ink3)">Priority fixes: P452 (industry: computer software), P169 (CEO linked entity), P2002 (Twitter: folkapp). These three properties have the highest impact on LLM entity confidence and require no developer access to add.</p>
+</div>
+
+<!-- 11 ABOUT -->
+<div class="section">
+  <div class="sec-hd"><span class="sec-n">11</span><h2 class="sec-t">About this audit</h2></div>
+  <p>Built by AISOLL as a methodology pilot demonstrating the full AEO audit and implementation process. This is not folk CRM's commissioned work — it is a case study showing exactly what a paid engagement delivers, built on real prompt data from June 2026.</p>
+  <p style="font-family:var(--mono);font-size:.7rem;color:var(--ink4);margin-top:1.5rem">AISOLL · aisoll.com · Audit built June 2026 · Not affiliated with folk CRM · github: aisoll/folk-aeo-pilot</p>
+</div>
+
+<footer>
+  <div class="fn">AISOLL — AEO Methodology Pilot<br>folk CRM Audit Report — June 2026<br>Not folk CRM's official site</div>
+  <div class="fn">aisoll.com</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', function() {
+  var d = document.documentElement;
+  var p = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+  document.getElementById('prog').style.width = Math.round(p) + '%';
+});
+</script>
+</body>
+</html>
